@@ -194,16 +194,26 @@ public class JuliaComponent extends JComponent
 			this.maxw = maxw;
 		}
 
+		/**
+		 * Faster exp() function for Java.
+		 * Source: https://martin.ankerl.com/2007/02/11/optimized-exponential-functions-for-java/
+		 * @param val the number to take the exponential of
+		 * @return an approximation for e^val
+		 */
+		private double exp(double val) {
+			final long tmp = (long) (1512775 * val + 1072632447);
+			return Double.longBitsToDouble(tmp << 32);
+		}
+
 		private double getIterations(double x, double y) {
 			double ret = 0;
 			double mag = 0;
-			for (int iter = 0; iter < MAX_ITER && mag < 100; iter++) {
+			for (int iter = 0; iter < MAX_ITER && mag < 20; iter++) {
 				double x1 = x * x - y * y + cx;
-				double y1 = 2 * x * y + cy;
+				y = 2 * x * y + cy;
 				x = x1;
-				y = y1;
 				mag = x * x + y * y;
-				ret += Math.exp(-Math.sqrt(mag));
+				ret += exp(-Math.sqrt(mag));
 			}
 			return ret;
 		}

@@ -15,7 +15,7 @@ import java.awt.image.BufferedImage;
  */
 public class JuliaComponent extends JComponent
 {
-	public static final double YRANGE = 1.5;
+	private static final double YRANGE = 1.5;
 	private static final int NUM_THREADS = 4;
 
 	private static final double[] CONTROL_X = {0.0, 0.16, 0.42, 0.6425, 0.8525, 1.0};
@@ -77,7 +77,7 @@ public class JuliaComponent extends JComponent
 	@Override
 	public void paintComponent(Graphics g) {
 		// Convert g back to its Graphics2D self
-		g2 = (Graphics2D)g;
+		g2 = (Graphics2D) g;
 
 		// Get size of component window
 		W = getWidth();
@@ -148,8 +148,7 @@ public class JuliaComponent extends JComponent
 		Thread[] threads = new Thread[NUM_THREADS];
 		int half = (W + 1) / 2;
 		for (int i = 0; i < NUM_THREADS; i++) {
-			threads[i] = new JuliaWorker(data, cx, cy, W, H,
-			                             half * i / NUM_THREADS,
+			threads[i] = new JuliaWorker(half * i / NUM_THREADS,
 			                             half * (i + 1) / NUM_THREADS);
 			threads[i].run();
 		}
@@ -178,5 +177,46 @@ public class JuliaComponent extends JComponent
 
 	private void drawBackground() {
 		g2.drawImage(im, 0, 0, null);
+	}
+
+
+	/**
+	 * Worker thread for doing the Julia set calculations
+	 * @author Eric K. Zhang
+	 */
+	private class JuliaWorker extends Thread {
+		private static final int MAX_ITER = 256;
+
+		private int minw, maxw;
+
+		JuliaWorker(int minw, int maxw) {
+			this.minw = minw;
+			this.maxw = maxw;
+		}
+
+		private double getIterations(double x, double y) {
+			double ret = 0;
+			double mag = 0;
+			for (int iter = 0; iter < MAX_ITER && mag < 100; iter++) {
+				double x1 = x * x - y * y + cx;
+				double y1 = 2 * x * y + cy;
+				x = x1;
+				y = y1;
+				mag = x * x + y * y;
+				ret += Math.exp(-Math.sqrt(mag));
+			}
+			return ret;
+		}
+
+		public void run() {
+			for (int i = minw; i < maxw; i++) {
+				for (int j = 0; j < H; j++) {
+					double x = getX(i);
+					double y = getY(j);
+					double d = 1.0 * getIterations(x, y) / MAX_ITER;
+					data[i][j] = d;
+				}
+			}
+		}
 	}
 }

@@ -27,7 +27,7 @@ public class JuliaComponent extends JComponent
 		new Color(0, 2, 0),
 		new Color(0, 7, 100)
 	};
-	private static final int NUM_COLORS = 1024;
+	private static final int NUM_COLORS = 4096;
 	private static final Color[] PALETTE = new Color[NUM_COLORS];
 
 	private static Color average(Color c1, Color c2, double w) {
@@ -208,7 +208,7 @@ public class JuliaComponent extends JComponent
 		private double getIterations(double x, double y) {
 			double ret = 0;
 			double mag = 0;
-			for (int iter = 0; iter < MAX_ITER && mag < 20; iter++) {
+			for (int iter = 0; iter < MAX_ITER && mag < 100; iter++) {
 				double x1 = x * x - y * y + cx;
 				y = 2 * x * y + cy;
 				x = x1;

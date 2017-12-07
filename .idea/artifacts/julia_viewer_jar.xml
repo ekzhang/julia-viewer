@@ -1,0 +1,8 @@
+<component name="ArtifactManager">
+  <artifact type="jar" build-on-make="true" name="julia-viewer:jar">
+    <output-path>$PROJECT_DIR$/out/artifacts/julia_viewer_jar</output-path>
+    <root id="archive" name="julia-viewer.jar">
+      <element id="module-output" name="julia-viewer" />
+    </root>
+  </artifact>
+</component>

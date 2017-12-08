@@ -137,7 +137,7 @@ public class JuliaComponent extends JComponent
 		avg /= H * H;
 		for (int i = 0; i < W; i++) {
 			for (int j = 0; j < H; j++) {
-				data[i][j] /= avg * 15;
+				data[i][j] /= avg * 16;
 			}
 		}
 	}

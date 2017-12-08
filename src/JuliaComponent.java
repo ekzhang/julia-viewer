@@ -118,11 +118,11 @@ public class JuliaComponent extends JComponent
 		data = null;
 	}
 
-	private double getX(int xc) {
+	private double getX(double xc) {
 		return YRANGE * (2.0 * xc / (W - 1) - 1) * W / H;
 	}
 
-	private double getY(int yc) {
+	private double getY(double yc) {
 		return -YRANGE * (2.0 * yc / (H - 1) - 1);
 	}
 
@@ -221,10 +221,13 @@ public class JuliaComponent extends JComponent
 		public void run() {
 			for (int i = minw; i < maxw; i++) {
 				for (int j = 0; j < H; j++) {
-					double x = getX(i);
-					double y = getY(j);
-					double d = 1.0 * getIterations(x, y) / MAX_ITER;
-					data[i][j] = d;
+					// Harmonic mean
+					double d = MAX_ITER;
+					d = Math.min(d, getIterations(getX(i - 0.25), getY(j - 0.25)));
+					d = Math.min(d, getIterations(getX(i - 0.25), getY(j + 0.25)));
+					d = Math.min(d, getIterations(getX(i + 0.25), getY(j - 0.25)));
+					d = Math.min(d, getIterations(getX(i + 0.25), getY(j + 0.25)));
+					data[i][j] = d / MAX_ITER;
 				}
 			}
 		}
